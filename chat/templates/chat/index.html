@@ -1,11 +1,18 @@
 {% extends "chat/base.html" %}
 
 {% block content %}
-    <div id="chat-messages">
+    <div id="chat-messages"
+         hx-ext="sse"
+         {# SSE는 무조건 GET 요청 #}
+         sse-connect="{% url 'chat:chat_sse' %}"
+         sse-swap="message"
+         hx-swap="beforeend"
+         hx-on::after-swap="setTimeout(() => { this.scrollTop = this.scrollHeight; }, 0);">
+    >
     </div>
 
     {# DRF에서도 세션인증 사용하면, CSRF Token 체크 #}
-    <form hx-post="{% url 'chat:chat_message_new' %}"
+    <form hx-post="{% url 'chat:chat_sse' %}"
           hx-target="#chat-messages"
           hx-swap="beforeend"
           hx-on::after-request="this.reset()"
