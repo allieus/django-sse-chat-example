@@ -1,8 +1,18 @@
 {% extends "chat/base.html" %}
 
 {% block content %}
-    <div>채팅 메시지</div>
-    <form action="">
-        채팅 입력 폼
+    <div id="chat-messages">
+    </div>
+
+    {# DRF에서도 세션인증 사용하면, CSRF Token 체크 #}
+    <form hx-post="{% url 'chat:chat_message_new' %}"
+          hx-target="#chat-messages"
+          hx-swap="beforeend"
+          hx-on::after-request="this.reset()"
+    >
+        {% csrf_token %}
+        {# MessageForm을 통한 렌더링 #}
+        <input type="text" name="text" />
+        <input type="submit" />
     </form>
 {% endblock %}
